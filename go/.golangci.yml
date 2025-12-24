@@ -1,0 +1,17 @@
+linters:
+  enable:
+    - errcheck    
+    - gosec       
+    - gocyclo     
+    - funlen      
+    - gocritic    
+    - prealloc    
+    - bodyclose   
+
+linters-settings:
+  gocyclo:
+    min-complexity: 10
+  funlen:
+    lines: 60
+  errcheck:
+    check-blank: true

@@ -1,0 +1,51 @@
+name: code easy gate
+
+on: [push, pull_request]
+
+jobs:
+  enforce-quality:
+    name: 👮 Code Police
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python Strict Lint
+        if: endsWith(github.event.repository.language, 'Python')
+        run: |
+          pip install ruff mypy
+          ruff check . --output-format=github --strict
+          mypy .
+
+      - name: TS Strict Lint
+        if: hashFiles('package.json') != ''
+        run: |
+          npm ci
+          npm run lint -- --max-warnings=0
+
+      - name: Go Lint
+        if: endsWith(github.event.repository.language, 'Go')
+        uses: golangci/golangci-lint-action@v3
+        with:
+          args: --issues-exit-code=1 --config=.golangci.yml
+
+      - name: Rust Clippy
+        if: hashFiles('Cargo.toml') != ''
+        run: cargo clippy -- -D warnings -D clippy::pedantic
+
+      - name: C/C++ Clang-Tidy
+        if: hashFiles('CMakeLists.txt') != ''
+        run: |
+          sudo apt-get install -y clang-tidy
+          # Run clang-tidy and fail if any output
+          clang-tidy src/*.cpp -warnings-as-errors=*
+
+  test-and-coverage:
+    needs: enforce-quality
+    name: 🧪 Lab Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Coverage Threshold
+        run: |
+          # Example Logic
+          if [ $COVERAGE -lt 80 ]; then exit 1; fi

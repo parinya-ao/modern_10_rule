@@ -1,0 +1,21 @@
+[tool.ruff]
+line-length = 70
+target-version = "py314"
+
+[tool.ruff.lint]
+# Select Rules: E=Error, F=Pyflakes, C90=Complexity, B=Bugbear, UP=Upgrade, PL=Pylint
+select = ["E", "F", "C90", "B", "UP", "PL", "RET", "SIM", "RUF"]
+ignore = []
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10 
+
+[tool.ruff.lint.pylint]
+max-args = 5    
+max-statements = 50
+
+[tool.mypy]
+strict = true
+disallow_untyped_defs = true
+warn_return_any = true
+warn_unused_ignores = true
