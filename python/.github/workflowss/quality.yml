@@ -1,0 +1,44 @@
+name: Code Quality check
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-check:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      RUST_LOG: debug
+      UV_v: 1
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install uv and Python 3.12.12
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          python-version: "3.12.12"
+          enable-cache: true
+          cache-dependency-glob: "requirements.txt"
+
+      - name: Install Dependencies with uv (verbose)
+        run: uv pip install --system -v -r requirements.txt
+
+      - name: Ruff Lint (verbose)
+        run: uv run ruff check . --verbose --output-format=github
+
+      - name: Ruff Format Check
+        run: uv run ruff format --check .
+
+      - name: Mypy Type Check (verbose)
+        run: uv run mypy . --verbose
