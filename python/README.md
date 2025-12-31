@@ -1,5 +1,28 @@
 # VS Code Python Setup
 
+## Python Environment Setup (with .venv and uv)
+
+1. **Create a virtual environment (.venv) in your project folder (Linux only):**
+
+  ```bash
+  python3 -m venv .venv
+  source .venv/bin/activate
+  ```
+
+2. **Install [uv](https://github.com/astral-sh/uv) (a fast Python package manager):**
+
+  ```bash
+  pip install uv
+  ```
+
+3. **Use uv to install development tools:**
+
+  ```bash
+  uv pip install ruff mypy pre-commit
+  ```
+
+This will install [ruff](https://docs.astral.sh/ruff/), [mypy](http://mypy-lang.org/), and [pre-commit](https://pre-commit.com/) into your virtual environment for linting, type checking, and git hook management.
+
 ## Recommended Extensions
 1. Ruff (Charliermarsh)
 2. Mypy Type Checker (Microsoft)
